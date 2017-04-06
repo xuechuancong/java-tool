@@ -446,8 +446,8 @@ public class MybatisEntityUtil {
         // 查询（根据主键ID查询）
         bw.write("\t<!-- 查询（根据主键ID查询） -->");
         bw.newLine();
-        bw.write("\t<select id=\"selectByPrimaryKey\" resultType=\""
-                + processResultMapId(beanName) + "\" parameterType=\"java.lang." + processType(types.get(0)) + "\">");
+        bw.write("\t<select id=\"selectByPrimaryKey\" resultMap=\""
+                + this.processResultMapId(beanName) + "ResultMap\" parameterType=\"java.lang." + processType(types.get(0)) + "\">");
         bw.newLine();
         bw.write("\t\t SELECT");
         bw.newLine();
