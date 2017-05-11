@@ -1,4 +1,4 @@
-package org.jeff.javatool.tool;
+package org.jeff.javatool.tool.ioc;
 
 import org.joor.Reflect;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 @Service
 public class IocJooq {
 
-    private static final String CLASS_NAME = "org.jeff.javatool.tool.IocEntity";
+    private static final String CLASS_NAME = "org.jeff.javatool.tool.ioc.IocEntity";
 
     /**
      * 旧的反射方法

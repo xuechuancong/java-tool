@@ -1,4 +1,4 @@
-package org.jeff.javatool.tool;
+package org.jeff.javatool.tool.ioc;
 
 /**
  * Created by weijianfu on 2017/5/11.
