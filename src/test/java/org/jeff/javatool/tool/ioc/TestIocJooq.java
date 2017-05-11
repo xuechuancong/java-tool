@@ -19,10 +19,13 @@ public class TestIocJooq {
 
     @Test
     public void iocJoop() {
-        System.out.println("-------------------Old method------------------");
+        System.out.println("---------------------Old method------------------");
         iocJooq.oldMethod();
 
         System.out.println("\n-------------------New method------------------");
         iocJooq.newMethod();
+
+        System.out.println("\n----------------------More---------------------");
+        iocJooq.more();
     }
 }
