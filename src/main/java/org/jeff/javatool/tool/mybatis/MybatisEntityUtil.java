@@ -1,4 +1,4 @@
-package org.jeff.tool.mybatis;
+package org.jeff.javatool.tool.mybatis;
 
 import java.io.*;
 import java.sql.*;
@@ -648,9 +648,9 @@ public class MybatisEntityUtil {
         List<String> tables = getTables();
         Map<String, String> tableComments = getTableComment();
         for (String table : tables) {
-            columns = new ArrayList<>();
-            types = new ArrayList<>();
-            comments = new ArrayList<>();
+            columns = new ArrayList<String>();
+            types = new ArrayList<String>();
+            comments = new ArrayList<String>();
             pstate = conn.prepareStatement(prefix + "'" + table + "'");
             ResultSet results = pstate.executeQuery();
             while (results.next()) {
