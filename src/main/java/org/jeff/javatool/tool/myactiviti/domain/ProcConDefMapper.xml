@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jeff.javatool.tool.myactiviti.domain.ProcConDefMapper" >
+  <resultMap id="BaseResultMap" type="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDef" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <id column="DATA_TYPE" property="dataType" jdbcType="VARCHAR" />
+    <result column="VAL" property="val" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="VARCHAR" />
+    <result column="SHOW_ORDER" property="showOrder" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, DATA_TYPE, VAL, STATE, SHOW_ORDER, CREATE_TIME
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDefExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from T_PROC_CON_DEF
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDefKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PROC_CON_DEF
+    where ID = #{id,jdbcType=VARCHAR}
+      and DATA_TYPE = #{dataType,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDefKey" >
+    delete from T_PROC_CON_DEF
+    where ID = #{id,jdbcType=VARCHAR}
+      and DATA_TYPE = #{dataType,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDefExample" >
+    delete from T_PROC_CON_DEF
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDef" >
+    insert into T_PROC_CON_DEF (ID, DATA_TYPE, VAL, 
+      STATE, SHOW_ORDER, CREATE_TIME
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, #{val,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, #{showOrder,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDef" >
+    insert into T_PROC_CON_DEF
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="dataType != null" >
+        DATA_TYPE,
+      </if>
+      <if test="val != null" >
+        VAL,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="showOrder != null" >
+        SHOW_ORDER,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="val != null" >
+        #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        #{showOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDefExample" resultType="java.lang.Integer" >
+    select count(*) from T_PROC_CON_DEF
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update T_PROC_CON_DEF
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataType != null" >
+        DATA_TYPE = #{record.dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.val != null" >
+        VAL = #{record.val,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.showOrder != null" >
+        SHOW_ORDER = #{record.showOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update T_PROC_CON_DEF
+    set ID = #{record.id,jdbcType=VARCHAR},
+      DATA_TYPE = #{record.dataType,jdbcType=VARCHAR},
+      VAL = #{record.val,jdbcType=VARCHAR},
+      STATE = #{record.state,jdbcType=VARCHAR},
+      SHOW_ORDER = #{record.showOrder,jdbcType=DECIMAL},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDef" >
+    update T_PROC_CON_DEF
+    <set >
+      <if test="val != null" >
+        VAL = #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        SHOW_ORDER = #{showOrder,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+      and DATA_TYPE = #{dataType,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.ProcConDef" >
+    update T_PROC_CON_DEF
+    set VAL = #{val,jdbcType=VARCHAR},
+      STATE = #{state,jdbcType=VARCHAR},
+      SHOW_ORDER = #{showOrder,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=VARCHAR}
+      and DATA_TYPE = #{dataType,jdbcType=VARCHAR}
+  </update>
+
+
+
+  <sql id="selectByParamWhere">
+    <where>
+      1=1
+      <if test="valLike != null">
+        AND VAL like #{valLike}
+      </if>
+      <if test="state != null">
+        AND STATE = #{state}
+      </if>
+      <if test="dataType != null">
+        AND DATA_TYPE = #{dataType}
+      </if>
+      <if test="showOrder != null">
+        AND SHOW_ORDER = #{showOrder}
+      </if>
+      <if test="createTime != null">
+        AND CREATE_TIME = #{createTime}
+      </if>
+    </where>
+  </sql>
+
+  <select id="countList" resultType="int">
+    SELECT COUNT(*) FROM T_PROC_CON_DEF
+    <include refid="selectByParamWhere" />
+  </select>
+
+  <select id="queryList" resultMap="BaseResultMap">
+    SELECT * FROM
+    (SELECT A.*, ROWNUM RN FROM (
+
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM T_PROC_CON_DEF
+    <include refid="selectByParamWhere" />
+    ORDER BY CREATE_TIME DESC
+
+    ) A WHERE ROWNUM &lt;= (#{offset} + #{limit})
+    )
+    WHERE RN &gt;= #{offset}
+  </select>
+
+</mapper>

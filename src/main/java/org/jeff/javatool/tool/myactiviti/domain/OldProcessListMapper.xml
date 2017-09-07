@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jeff.javatool.tool.myactiviti.domain.OldProcessListMapper">
+
+	<select id="getWaittingDeal"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @requestStaff varchar(50)
+		SET	 @requestStaff=#{requestStaff}
+		DECLARE @requestOrgName varchar(50)
+		SET	 @requestOrgName=#{requestOrgName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+			DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime  varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,a.EmpID requestStaffId,b.name requestStaff
+,c.DepID requestOrgId,d.Name requestOrgName,convert(varchar(50),a.sendDate,20) requestTime,a.docId processId,a.confdate  confdate, f.name processName,a.url detailUrl,cast(e.docstepid as varchar(10)) taskId,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status             
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmActiveStep e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId
+  where a.status 	&lt; 2
+   and a.status >= 0
+	and c.SortID=1 and f.buse=1
+   and a.EmpID is not null and (e.empid = '+@userId+' or (e.empid = 0 and e.agentid = '+@userId+'))'
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@requestStaff is not null) set @sql=@sql+' and b.name like ''%'+@requestStaff+'%'''
+   if(@requestOrgName is not null) set @sql=@sql+' and d.Name='''+@requestOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and sendDate between '''+@minTime +''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countWaittingDeal"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @requestStaff varchar(50)
+		SET	 @requestStaff=#{requestStaff}
+		DECLARE @requestOrgName varchar(50)
+		SET	 @requestOrgName=#{requestOrgName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime  varchar(50)
+		SET	 @maxTime=#{maxTime}
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmActiveStep e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId
+  where a.status 	&lt; 2
+   and a.status >= 0 and f.buse=1
+	 and a.EmpID is not null and (e.empid = '+@userId+' or (e.empid = 0 and e.agentid = '+@userId+'))'
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@requestStaff is not null) set @sql=@sql+' and b.name like ''%'+@requestStaff+'%'''
+   if(@requestOrgName is not null) set @sql=@sql+' and d.Name='''+@requestOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and sendDate between '''+@minTime +''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getWaittingDealLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,a.EmpID requestStaffId,b.name requestStaff
+,c.DepID requestOrgId,d.Name requestOrgName,convert(varchar(50),a.sendDate,20) requestTime,a.docId processId,a.confdate  confdate, f.name processName,a.url detailUrl,cast(e.docstepid as varchar(10)) taskId,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmActiveStep e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId
+  where a.status 	&lt; 2
+   and a.status >= 0
+	and c.SortID=1 and f.buse=1
+   and a.EmpID is not null and (e.empid = '+@userId+' or (e.empid = 0 and e.agentid = '+@userId+'))'
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countWaittingDealLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmActiveStep e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId
+  where a.status 	&lt; 2
+   and a.status >= 0
+	and c.SortID=1 and f.buse=1
+   and a.EmpID is not null and (e.empid = '+@userId+' or (e.empid = 0 and e.agentid = '+@userId+'))'
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+				EXEC(@sql)
+	</select>
+	<select id="getAreadyDeal"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @requestStaff varchar(50)
+		SET	 @requestStaff=#{requestStaff}
+		DECLARE @requestOrgName varchar(50)
+		SET	 @requestOrgName=#{requestOrgName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,a.EmpID requestStaffId,b.name requestStaff
+,c.DepID requestOrgId,d.Name requestOrgName,a.sendDate requestTime,a.docId processId,a.confdate  confdate, f.name processName,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmdonestepbk e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId where (a.status = 2 or a.status = 3)
+	and c.SortID=1 and  a.empid !=e.empid and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@requestStaff is not null) set @sql=@sql+' and b.name like ''%'+@requestStaff+'%'''
+   if(@requestOrgName is not null) set @sql=@sql+' and d.Name='''+@requestOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and sendDate between '''+ @minTime +''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countAreadyDeal"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @requestStaff varchar(50)
+		SET	 @requestStaff=#{requestStaff}
+		DECLARE @requestOrgName varchar(50)
+		SET	 @requestOrgName=#{requestOrgName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmdonestepbk e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId where (a.status = 2 or a.status = 3)
+	and c.SortID=1 and  a.empid !=e.empid and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@requestStaff is not null) set @sql=@sql+' and b.name like ''%'+@requestStaff+'%'''
+   if(@requestOrgName is not null) set @sql=@sql+' and d.Name='''+@requestOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and sendDate between '''+ @minTime +''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getAreadyDealLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,a.EmpID requestStaffId,b.name requestStaff
+,c.DepID requestOrgId,d.Name requestOrgName,a.sendDate requestTime,a.docId processId,a.confdate  confdate, f.name processName,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmdonestepbk e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId where (a.status = 2 or a.status = 3)
+	and c.SortID=1 and  a.empid !=e.empid and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countAreadyDealLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a join mrBaseInf b on a.EmpID=b.EmpID join  wmdonestepbk e on a.docId=e.docId
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId where (a.status = 2 or a.status = 3)
+	and c.SortID=1 and  a.empid !=e.empid and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+				EXEC(@sql)
+	</select>
+	<select id="getRequestDone"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,
+a.sendDate requestTime,a.ConfDate completeTime,a.docId processId, f.name processName,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a  join wmFlowSet f on f.FlowID=a.flowId where a.status =2 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+''' and a.FlowKindID='+@processType+''''
+   if(@processName is not null) set @sql=@sql+''' and f.name='+@processName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.sendDate between '''+ @minTime+''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countRequestDone"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a  join wmFlowSet f on f.FlowID=a.flowId where a.status =2 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+''' and a.FlowKindID='+@processType+''''
+   if(@processName is not null) set @sql=@sql+''' and f.name='+@processName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.sendDate between '''+ @minTime+''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getRequestDoneLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,
+a.sendDate requestTime,a.ConfDate completeTime,a.docId processId, f.name processName,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a  join wmFlowSet f on f.FlowID=a.flowId where a.status =2 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''')'
+
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countRequestDoneLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a  join wmFlowSet f on f.FlowID=a.flowId where a.status =2 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+      set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''')'
+
+				EXEC(@sql)
+	</select>
+	<select id="getRequestDo"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,e.EmpID deallingStaffId,b.name deallingStaff
+,c.DepID requestOrgId,d.Name requestOrgName,e.startDate arriveTime,a.docId processId, f.name processName,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a  join  wmActiveStep e on a.docId=e.docId join mrBaseInf b on e.EmpID=b.EmpID
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId wherea.status &lt;  2
+	and a.status>=0 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+''' and a.FlowKindID='+@processType+''''
+   if(@processName is not null) set @sql=@sql+''' and f.name='+@processName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.sendDate between '''+ @minTime+''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countRequestDo"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a  join  wmActiveStep e on a.docId=e.docId join mrBaseInf b on e.EmpID=b.EmpID
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId wherea.status &lt;  2
+	and a.status>=0 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+''' and a.FlowKindID='+@processType+''''
+   if(@processName is not null) set @sql=@sql+''' and f.name='+@processName+''''
+   if(@processId is not null) set @sql=@sql+' and a.docId='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.sendDate between '''+ @minTime+''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getRequestDoLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle,e.EmpID deallingStaffId,b.name deallingStaff
+,c.DepID requestOrgId,d.Name requestOrgName,e.startDate arriveTime,a.docId processId, f.name processName,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a  join  wmActiveStep e on a.docId=e.docId join mrBaseInf b on e.EmpID=b.EmpID
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId wherea.status &lt;  2
+	and a.status>=0 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countRequestDoLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a  join  wmActiveStep e on a.docId=e.docId join mrBaseInf b on e.EmpID=b.EmpID
+join mrPosition c  on a.EmpID=c.EmpID JOIN mrDep d on c.DepID=d.DepID join wmFlowSet f on f.FlowID=a.flowId wherea.status &lt;  2
+	and a.status>=0 and f.buse=1
+   and a.EmpID is not null and e.empid = '+@userId
+   set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+
+				EXEC(@sql)
+	</select>
+	
+	<select id="getMyDraft"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime  varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle, f.name processName
+a.sendDate saveTime,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a join wmFlowSet f on f.FlowID=a.flowId  where a.status = -1 and a.EmpID is not null and f.buse=1
+	and a.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@minTime is not null) set @sql=@sql+' and sendDate between '''+@minTime +''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countMyDraft"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime  varchar(50)
+		SET	 @maxTime=#{maxTime}
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a join wmFlowSet f on f.FlowID=a.flowId   where a.status = -1 and a.EmpID is not null and f.buse=1
+	and a.empid = '+@userId
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@minTime is not null) set @sql=@sql+' and sendDate between '''+@minTime +''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getMyDraftLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.FlowKindID processType ,a.FlowKindName processTypeName,a.title processTitle, f.name processName,
+a.sendDate saveTime,a.url detailUrl,cast(a.empid as varchar(10)) requestStaffId, cast(a.flowid as varchar(10)) procDefId,cast(a.status as varchar(10)) status
+from wmflowdoc a join wmFlowSet f on f.FlowID=a.flowId   where a.status = -1 and a.EmpID is not null and f.buse=1
+	and a.empid = '+@userId
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' or b.name like '''+@keyWord+''' or d.Name like '''+@keyWord+''')'
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countMyDraftLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from wmflowdoc a join wmFlowSet f on f.FlowID=a.flowId   where a.status = -1 and a.EmpID is not null  and f.buse=1
+	and a.empid = '+@userId
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or f.name like '''+@keyWord+''' or a.title like '''+@keyWord+''' )'
+				EXEC(@sql)
+	</select>
+	<select id="getProcDefList"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime  varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.KindID processType,a.name procssName,a.note processRemark,a.UDate updateTime,a.flowId procDefId 
+		from wmFlowSet a join wmModCode b on a.modcode=b.modcode and a.buse=1 and b.buse=1
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@minTime is not null) set @sql=@sql+' and a.UDate between '''+@minTime +''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countProcDefList"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @processType varchar(50)
+		SET	 @processType=#{processType}
+		DECLARE @processName varchar(100)
+		SET	 @processName=#{processName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime  varchar(50)
+		SET	 @maxTime=#{maxTime}
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+	from wmFlowSet a join wmModCode b on a.modcode=b.modcode and a.buse=1 and b.buse=1
+   if(@processType is not null) set @sql=@sql+' and a.FlowKindID='''+@processType+''''
+   if(@processName is not null) set @sql=@sql+' and f.name='''+@processName+''''
+   if(@minTime is not null) set @sql=@sql+' and a.UDate between '''+@minTime +''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getProcDefListLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.KindID processType,a.name procssName,a.note processRemark,a.UDate updateTime,a.flowId procDefId 
+		from wmFlowSet a join wmModCode b on a.modcode=b.modcode and a.buse=1 and b.buse=1
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or a.name like '''+@keyWord+''')'
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.confdate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by confdate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countProcDefListLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+	
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+	from wmFlowSet a join wmModCode b on a.modcode=b.modcode and a.buse=1 and b.buse=1
+    set @sql=@sql+' and (a.FlowKindName like '''+@keyWord+''' or a.name like '''+@keyWord+''')'
+				EXEC(@sql)
+	</select>
+</mapper>

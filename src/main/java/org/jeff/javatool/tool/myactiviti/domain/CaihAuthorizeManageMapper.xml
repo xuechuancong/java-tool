@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jeff.javatool.tool.myactiviti.domain.CaihAuthorizeManageMapper" >
+  <resultMap id="BaseResultMap" type="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManage" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="AUTH_STAFF_ID" property="authStaffId" jdbcType="VARCHAR" />
+    <result column="AUTH_STAFF_NAME" property="authStaffName" jdbcType="VARCHAR" />
+    <result column="AUTHED_STAFF_ID" property="authedStaffId" jdbcType="VARCHAR" />
+    <result column="AUTHED_STAFF_NAME" property="authedStaffName" jdbcType="VARCHAR" />
+    <result column="PROCESS_TYPE" property="processType" jdbcType="VARCHAR" />
+    <result column="PROCESS_DEF_KEY" property="processDefKey" jdbcType="VARCHAR" />
+    <result column="PROCESS_NAME" property="processName" jdbcType="VARCHAR" />
+    <result column="TASK_DEF_ID" property="taskDefId" jdbcType="VARCHAR" />
+    <result column="TASK_NAME" property="taskName" jdbcType="VARCHAR" />
+    <result column="AUTH_START_TIME" property="authStartTime" jdbcType="TIMESTAMP" />
+    <result column="AUTH_END_TIME" property="authEndTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="SPARE_FIELD1" property="spareField1" jdbcType="VARCHAR" />
+    <result column="SPARE_FIELD2" property="spareField2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, AUTH_STAFF_ID, AUTH_STAFF_NAME, AUTHED_STAFF_ID, AUTHED_STAFF_NAME, PROCESS_TYPE, 
+    PROCESS_DEF_KEY, PROCESS_NAME, TASK_DEF_ID, TASK_NAME, AUTH_START_TIME, AUTH_END_TIME, 
+    STATUS, CREATE_TIME, MODIFY_TIME, SPARE_FIELD1, SPARE_FIELD2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManageExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from CAIH_AUTHORIZE_MANAGE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from CAIH_AUTHORIZE_MANAGE
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from CAIH_AUTHORIZE_MANAGE
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManageExample" >
+    delete from CAIH_AUTHORIZE_MANAGE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManage" >
+    insert into CAIH_AUTHORIZE_MANAGE (ID, AUTH_STAFF_ID, AUTH_STAFF_NAME, 
+      AUTHED_STAFF_ID, AUTHED_STAFF_NAME, PROCESS_TYPE, 
+      PROCESS_DEF_KEY, PROCESS_NAME, TASK_DEF_ID, 
+      TASK_NAME, AUTH_START_TIME, AUTH_END_TIME, 
+      STATUS, CREATE_TIME, MODIFY_TIME, 
+      SPARE_FIELD1, SPARE_FIELD2)
+    values (#{id,jdbcType=DECIMAL}, #{authStaffId,jdbcType=VARCHAR}, #{authStaffName,jdbcType=VARCHAR}, 
+      #{authedStaffId,jdbcType=VARCHAR}, #{authedStaffName,jdbcType=VARCHAR}, #{processType,jdbcType=VARCHAR}, 
+      #{processDefKey,jdbcType=VARCHAR}, #{processName,jdbcType=VARCHAR}, #{taskDefId,jdbcType=VARCHAR}, 
+      #{taskName,jdbcType=VARCHAR}, #{authStartTime,jdbcType=TIMESTAMP}, #{authEndTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{spareField1,jdbcType=VARCHAR}, #{spareField2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManage" >
+    insert into CAIH_AUTHORIZE_MANAGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="authStaffId != null" >
+        AUTH_STAFF_ID,
+      </if>
+      <if test="authStaffName != null" >
+        AUTH_STAFF_NAME,
+      </if>
+      <if test="authedStaffId != null" >
+        AUTHED_STAFF_ID,
+      </if>
+      <if test="authedStaffName != null" >
+        AUTHED_STAFF_NAME,
+      </if>
+      <if test="processType != null" >
+        PROCESS_TYPE,
+      </if>
+      <if test="processDefKey != null" >
+        PROCESS_DEF_KEY,
+      </if>
+      <if test="processName != null" >
+        PROCESS_NAME,
+      </if>
+      <if test="taskDefId != null" >
+        TASK_DEF_ID,
+      </if>
+      <if test="taskName != null" >
+        TASK_NAME,
+      </if>
+      <if test="authStartTime != null" >
+        AUTH_START_TIME,
+      </if>
+      <if test="authEndTime != null" >
+        AUTH_END_TIME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="modifyTime != null" >
+        MODIFY_TIME,
+      </if>
+      <if test="spareField1 != null" >
+        SPARE_FIELD1,
+      </if>
+      <if test="spareField2 != null" >
+        SPARE_FIELD2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="authStaffId != null" >
+        #{authStaffId,jdbcType=VARCHAR},
+      </if>
+      <if test="authStaffName != null" >
+        #{authStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="authedStaffId != null" >
+        #{authedStaffId,jdbcType=VARCHAR},
+      </if>
+      <if test="authedStaffName != null" >
+        #{authedStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="processType != null" >
+        #{processType,jdbcType=VARCHAR},
+      </if>
+      <if test="processDefKey != null" >
+        #{processDefKey,jdbcType=VARCHAR},
+      </if>
+      <if test="processName != null" >
+        #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDefId != null" >
+        #{taskDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="authStartTime != null" >
+        #{authStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authEndTime != null" >
+        #{authEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spareField1 != null" >
+        #{spareField1,jdbcType=VARCHAR},
+      </if>
+      <if test="spareField2 != null" >
+        #{spareField2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManageExample" resultType="java.lang.Integer" >
+    select count(*) from CAIH_AUTHORIZE_MANAGE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update CAIH_AUTHORIZE_MANAGE
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.authStaffId != null" >
+        AUTH_STAFF_ID = #{record.authStaffId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authStaffName != null" >
+        AUTH_STAFF_NAME = #{record.authStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authedStaffId != null" >
+        AUTHED_STAFF_ID = #{record.authedStaffId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authedStaffName != null" >
+        AUTHED_STAFF_NAME = #{record.authedStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.processType != null" >
+        PROCESS_TYPE = #{record.processType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.processDefKey != null" >
+        PROCESS_DEF_KEY = #{record.processDefKey,jdbcType=VARCHAR},
+      </if>
+      <if test="record.processName != null" >
+        PROCESS_NAME = #{record.processName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskDefId != null" >
+        TASK_DEF_ID = #{record.taskDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskName != null" >
+        TASK_NAME = #{record.taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.authStartTime != null" >
+        AUTH_START_TIME = #{record.authStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.authEndTime != null" >
+        AUTH_END_TIME = #{record.authEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.modifyTime != null" >
+        MODIFY_TIME = #{record.modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.spareField1 != null" >
+        SPARE_FIELD1 = #{record.spareField1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spareField2 != null" >
+        SPARE_FIELD2 = #{record.spareField2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update CAIH_AUTHORIZE_MANAGE
+    set ID = #{record.id,jdbcType=DECIMAL},
+      AUTH_STAFF_ID = #{record.authStaffId,jdbcType=VARCHAR},
+      AUTH_STAFF_NAME = #{record.authStaffName,jdbcType=VARCHAR},
+      AUTHED_STAFF_ID = #{record.authedStaffId,jdbcType=VARCHAR},
+      AUTHED_STAFF_NAME = #{record.authedStaffName,jdbcType=VARCHAR},
+      PROCESS_TYPE = #{record.processType,jdbcType=VARCHAR},
+      PROCESS_DEF_KEY = #{record.processDefKey,jdbcType=VARCHAR},
+      PROCESS_NAME = #{record.processName,jdbcType=VARCHAR},
+      TASK_DEF_ID = #{record.taskDefId,jdbcType=VARCHAR},
+      TASK_NAME = #{record.taskName,jdbcType=VARCHAR},
+      AUTH_START_TIME = #{record.authStartTime,jdbcType=TIMESTAMP},
+      AUTH_END_TIME = #{record.authEndTime,jdbcType=TIMESTAMP},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      MODIFY_TIME = #{record.modifyTime,jdbcType=TIMESTAMP},
+      SPARE_FIELD1 = #{record.spareField1,jdbcType=VARCHAR},
+      SPARE_FIELD2 = #{record.spareField2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManage" >
+    update CAIH_AUTHORIZE_MANAGE
+    <set >
+      <if test="authStaffId != null" >
+        AUTH_STAFF_ID = #{authStaffId,jdbcType=VARCHAR},
+      </if>
+      <if test="authStaffName != null" >
+        AUTH_STAFF_NAME = #{authStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="authedStaffId != null" >
+        AUTHED_STAFF_ID = #{authedStaffId,jdbcType=VARCHAR},
+      </if>
+      <if test="authedStaffName != null" >
+        AUTHED_STAFF_NAME = #{authedStaffName,jdbcType=VARCHAR},
+      </if>
+      <if test="processType != null" >
+        PROCESS_TYPE = #{processType,jdbcType=VARCHAR},
+      </if>
+      <if test="processDefKey != null" >
+        PROCESS_DEF_KEY = #{processDefKey,jdbcType=VARCHAR},
+      </if>
+      <if test="processName != null" >
+        PROCESS_NAME = #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskDefId != null" >
+        TASK_DEF_ID = #{taskDefId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        TASK_NAME = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="authStartTime != null" >
+        AUTH_START_TIME = #{authStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="authEndTime != null" >
+        AUTH_END_TIME = #{authEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spareField1 != null" >
+        SPARE_FIELD1 = #{spareField1,jdbcType=VARCHAR},
+      </if>
+      <if test="spareField2 != null" >
+        SPARE_FIELD2 = #{spareField2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihAuthorizeManage" >
+    update CAIH_AUTHORIZE_MANAGE
+    set AUTH_STAFF_ID = #{authStaffId,jdbcType=VARCHAR},
+      AUTH_STAFF_NAME = #{authStaffName,jdbcType=VARCHAR},
+      AUTHED_STAFF_ID = #{authedStaffId,jdbcType=VARCHAR},
+      AUTHED_STAFF_NAME = #{authedStaffName,jdbcType=VARCHAR},
+      PROCESS_TYPE = #{processType,jdbcType=VARCHAR},
+      PROCESS_DEF_KEY = #{processDefKey,jdbcType=VARCHAR},
+      PROCESS_NAME = #{processName,jdbcType=VARCHAR},
+      TASK_DEF_ID = #{taskDefId,jdbcType=VARCHAR},
+      TASK_NAME = #{taskName,jdbcType=VARCHAR},
+      AUTH_START_TIME = #{authStartTime,jdbcType=TIMESTAMP},
+      AUTH_END_TIME = #{authEndTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+      SPARE_FIELD1 = #{spareField1,jdbcType=VARCHAR},
+      SPARE_FIELD2 = #{spareField2,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

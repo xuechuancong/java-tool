@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jeff.javatool.tool.myactiviti.domain.CaihCollectInfoMapper" >
+  <resultMap id="BaseResultMap" type="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfo" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="COLLECT_TYPE" property="collectType" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="COLLECT_ID" property="collectId" jdbcType="VARCHAR" />
+    <result column="COLLECT_TIME" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="PROCESS_NAME" property="processName" jdbcType="VARCHAR" />
+    <result column="REQUEST_STAFF" property="requestStaff" jdbcType="VARCHAR" />
+    <result column="REQUEST_ORG" property="requestOrg" jdbcType="VARCHAR" />
+    <result column="REQUEST_TIME" property="requestTime" jdbcType="TIMESTAMP" />
+    <result column="SPARE_FIELD1" property="spareField1" jdbcType="VARCHAR" />
+    <result column="SPARE_FIELD2" property="spareField2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, USER_ID, USER_NAME, COLLECT_TYPE, TITLE, COLLECT_ID, COLLECT_TIME, PROCESS_NAME, 
+    REQUEST_STAFF, REQUEST_ORG, REQUEST_TIME, SPARE_FIELD1, SPARE_FIELD2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from CAIH_COLLECT_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from CAIH_COLLECT_INFO
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from CAIH_COLLECT_INFO
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfoExample" >
+    delete from CAIH_COLLECT_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfo" >
+    insert into CAIH_COLLECT_INFO (ID, USER_ID, USER_NAME, 
+      COLLECT_TYPE, TITLE, COLLECT_ID, 
+      COLLECT_TIME, PROCESS_NAME, REQUEST_STAFF, 
+      REQUEST_ORG, REQUEST_TIME, SPARE_FIELD1, 
+      SPARE_FIELD2)
+    values (#{id,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{collectType,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{collectId,jdbcType=VARCHAR}, 
+      #{collectTime,jdbcType=TIMESTAMP}, #{processName,jdbcType=VARCHAR}, #{requestStaff,jdbcType=VARCHAR}, 
+      #{requestOrg,jdbcType=VARCHAR}, #{requestTime,jdbcType=TIMESTAMP}, #{spareField1,jdbcType=VARCHAR}, 
+      #{spareField2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfo" >
+    insert into CAIH_COLLECT_INFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="userName != null" >
+        USER_NAME,
+      </if>
+      <if test="collectType != null" >
+        COLLECT_TYPE,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="collectId != null" >
+        COLLECT_ID,
+      </if>
+      <if test="collectTime != null" >
+        COLLECT_TIME,
+      </if>
+      <if test="processName != null" >
+        PROCESS_NAME,
+      </if>
+      <if test="requestStaff != null" >
+        REQUEST_STAFF,
+      </if>
+      <if test="requestOrg != null" >
+        REQUEST_ORG,
+      </if>
+      <if test="requestTime != null" >
+        REQUEST_TIME,
+      </if>
+      <if test="spareField1 != null" >
+        SPARE_FIELD1,
+      </if>
+      <if test="spareField2 != null" >
+        SPARE_FIELD2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="collectType != null" >
+        #{collectType,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="collectId != null" >
+        #{collectId,jdbcType=VARCHAR},
+      </if>
+      <if test="collectTime != null" >
+        #{collectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processName != null" >
+        #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestStaff != null" >
+        #{requestStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="requestOrg != null" >
+        #{requestOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="requestTime != null" >
+        #{requestTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spareField1 != null" >
+        #{spareField1,jdbcType=VARCHAR},
+      </if>
+      <if test="spareField2 != null" >
+        #{spareField2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfoExample" resultType="java.lang.Integer" >
+    select count(*) from CAIH_COLLECT_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update CAIH_COLLECT_INFO
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null" >
+        USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.collectType != null" >
+        COLLECT_TYPE = #{record.collectType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.title != null" >
+        TITLE = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.collectId != null" >
+        COLLECT_ID = #{record.collectId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.collectTime != null" >
+        COLLECT_TIME = #{record.collectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.processName != null" >
+        PROCESS_NAME = #{record.processName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.requestStaff != null" >
+        REQUEST_STAFF = #{record.requestStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="record.requestOrg != null" >
+        REQUEST_ORG = #{record.requestOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.requestTime != null" >
+        REQUEST_TIME = #{record.requestTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.spareField1 != null" >
+        SPARE_FIELD1 = #{record.spareField1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spareField2 != null" >
+        SPARE_FIELD2 = #{record.spareField2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update CAIH_COLLECT_INFO
+    set ID = #{record.id,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      COLLECT_TYPE = #{record.collectType,jdbcType=VARCHAR},
+      TITLE = #{record.title,jdbcType=VARCHAR},
+      COLLECT_ID = #{record.collectId,jdbcType=VARCHAR},
+      COLLECT_TIME = #{record.collectTime,jdbcType=TIMESTAMP},
+      PROCESS_NAME = #{record.processName,jdbcType=VARCHAR},
+      REQUEST_STAFF = #{record.requestStaff,jdbcType=VARCHAR},
+      REQUEST_ORG = #{record.requestOrg,jdbcType=VARCHAR},
+      REQUEST_TIME = #{record.requestTime,jdbcType=TIMESTAMP},
+      SPARE_FIELD1 = #{record.spareField1,jdbcType=VARCHAR},
+      SPARE_FIELD2 = #{record.spareField2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfo" >
+    update CAIH_COLLECT_INFO
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="collectType != null" >
+        COLLECT_TYPE = #{collectType,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="collectId != null" >
+        COLLECT_ID = #{collectId,jdbcType=VARCHAR},
+      </if>
+      <if test="collectTime != null" >
+        COLLECT_TIME = #{collectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processName != null" >
+        PROCESS_NAME = #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="requestStaff != null" >
+        REQUEST_STAFF = #{requestStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="requestOrg != null" >
+        REQUEST_ORG = #{requestOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="requestTime != null" >
+        REQUEST_TIME = #{requestTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="spareField1 != null" >
+        SPARE_FIELD1 = #{spareField1,jdbcType=VARCHAR},
+      </if>
+      <if test="spareField2 != null" >
+        SPARE_FIELD2 = #{spareField2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.CaihCollectInfo" >
+    update CAIH_COLLECT_INFO
+    set USER_ID = #{userId,jdbcType=VARCHAR},
+      USER_NAME = #{userName,jdbcType=VARCHAR},
+      COLLECT_TYPE = #{collectType,jdbcType=VARCHAR},
+      TITLE = #{title,jdbcType=VARCHAR},
+      COLLECT_ID = #{collectId,jdbcType=VARCHAR},
+      COLLECT_TIME = #{collectTime,jdbcType=TIMESTAMP},
+      PROCESS_NAME = #{processName,jdbcType=VARCHAR},
+      REQUEST_STAFF = #{requestStaff,jdbcType=VARCHAR},
+      REQUEST_ORG = #{requestOrg,jdbcType=VARCHAR},
+      REQUEST_TIME = #{requestTime,jdbcType=TIMESTAMP},
+      SPARE_FIELD1 = #{spareField1,jdbcType=VARCHAR},
+      SPARE_FIELD2 = #{spareField2,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

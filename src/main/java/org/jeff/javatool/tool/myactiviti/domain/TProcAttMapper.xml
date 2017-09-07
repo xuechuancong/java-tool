@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jeff.javatool.tool.myactiviti.domain.TProcAttMapper" >
+  <resultMap id="BaseResultMap" type="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAtt" >
+    <id column="FORM_INST_ID" property="formInstId" jdbcType="DECIMAL" />
+    <id column="ATT_ID" property="attId" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    FORM_INST_ID, ATT_ID, STATE, CREATE_TIME, UPDATE_TIME
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAttExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from T_PROC_ATT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAttKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_PROC_ATT
+    where FORM_INST_ID = #{formInstId,jdbcType=DECIMAL}
+      and ATT_ID = #{attId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAttKey" >
+    delete from T_PROC_ATT
+    where FORM_INST_ID = #{formInstId,jdbcType=DECIMAL}
+      and ATT_ID = #{attId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAttExample" >
+    delete from T_PROC_ATT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAtt" >
+    insert into T_PROC_ATT (FORM_INST_ID, ATT_ID, STATE, 
+      CREATE_TIME, UPDATE_TIME)
+    values (#{formInstId,jdbcType=DECIMAL}, #{attId,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAtt" >
+    insert into T_PROC_ATT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="formInstId != null" >
+        FORM_INST_ID,
+      </if>
+      <if test="attId != null" >
+        ATT_ID,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="formInstId != null" >
+        #{formInstId,jdbcType=DECIMAL},
+      </if>
+      <if test="attId != null" >
+        #{attId,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAttExample" resultType="java.lang.Integer" >
+    select count(*) from T_PROC_ATT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update T_PROC_ATT
+    <set >
+      <if test="record.formInstId != null" >
+        FORM_INST_ID = #{record.formInstId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.attId != null" >
+        ATT_ID = #{record.attId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update T_PROC_ATT
+    set FORM_INST_ID = #{record.formInstId,jdbcType=DECIMAL},
+      ATT_ID = #{record.attId,jdbcType=VARCHAR},
+      STATE = #{record.state,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAtt" >
+    update T_PROC_ATT
+    <set >
+      <if test="state != null" >
+        STATE = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where FORM_INST_ID = #{formInstId,jdbcType=DECIMAL}
+      and ATT_ID = #{attId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.jeff.javatool.tool.myactiviti.domain.entity.TProcAtt" >
+    update T_PROC_ATT
+    set STATE = #{state,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    where FORM_INST_ID = #{formInstId,jdbcType=DECIMAL}
+      and ATT_ID = #{attId,jdbcType=VARCHAR}
+  </update>
+</mapper>

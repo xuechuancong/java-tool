@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jeff.javatool.tool.myactiviti.domain.OldMesseageListMapper">
+	
+	
+	<select id="getUnReadMsg"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendOrgName varchar(50)
+		SET	 @sendOrgName=#{sendOrgName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.Subject processTitle,a.EmpName sendStaff,a.FromDepName sendOrgName,convert(varchar(50),a.CDate,20) sendTime ,a.MsgSerID processId 
+		from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where  unsealflag = 1    and deled = 0 and status !=3 and b.empid= '+@userId
+   if(@sendStaff is not null) set @sql=@sql+''' and a.EmpName='+@sendStaff+''''
+   if(@sendOrgName is not null) set @sql=@sql+''' and a.FromDepName='+@sendOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.MsgSerID='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.CDate between '''+ @minTime+''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.CDate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by CDate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countUnReadMsg"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendOrgName varchar(50)
+		SET	 @sendOrgName=#{sendOrgName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where  unsealflag = 1    and deled = 0 and status !=3 and b.empid= '+@userId
+   if(@sendStaff is not null) set @sql=@sql+''' and a.EmpName='+@sendStaff+''''
+   if(@sendOrgName is not null) set @sql=@sql+''' and a.FromDepName='+@sendOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.MsgSerID='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.CDate between '''+ @minTime+''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getUnReadMsgLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='a.Subject processTitle,a.EmpName sendStaff,a.FromDepName sendOrgName,convert(varchar(50),a.CDate,20) sendTime ,a.MsgSerID processId 
+		from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where  unsealflag = 1    and deled = 0 and status !=3 and b.empid= '+@userId
+   set @sql=@sql+' and (a.EmpName like '''+@keyWord+''' or a.FromDepName like '''+@keyWord+''' or a.Subject like '''+@keyWord+''')'
+
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.CDate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by CDate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countUnReadMsgLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where  unsealflag = 1    and deled = 0 and status !=3 and b.empid= '+@userId
+   set @sql=@sql+' and (a.EmpName like '''+@keyWord+''' or a.FromDepName like '''+@keyWord+''' or a.Subject like '''+@keyWord+''')'
+
+				EXEC(@sql)
+	</select>
+	<select id="getAreadyReadMsg"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendOrgName varchar(50)
+		SET	 @sendOrgName=#{sendOrgName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql =' a.Subject processTitle,a.EmpName sendStaff,a.FromDepName sendOrgName,convert(varchar(50),a.CDate,20) sendTime ,a.MsgSerID processId 
+		from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where  deled = 0 and status =1 and b.empid= '+@userId
+   if(@sendStaff is not null) set @sql=@sql+''' and a.EmpName='+@sendStaff+''''
+   if(@sendOrgName is not null) set @sql=@sql+''' and a.FromDepName='+@sendOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.MsgSerID='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.CDate between '''+ @minTime+''' and '''+@maxTime+''''
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.CDate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by CDate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countAreadyReadMsg"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @processId varchar(50)
+		SET	 @processId=#{processId}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendStaff varchar(50)
+		SET	 @sendStaff=#{sendStaff}
+		DECLARE @sendOrgName varchar(50)
+		SET	 @sendOrgName=#{sendOrgName}
+		DECLARE @minTime varchar(50)
+		SET	 @minTime=#{minTime}
+		DECLARE @maxTime varchar(50)
+		SET	 @maxTime=#{maxTime}
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where   deled = 0 and status =1 and b.empid= '+@userId
+   if(@sendStaff is not null) set @sql=@sql+''' and a.EmpName='+@sendStaff+''''
+   if(@sendOrgName is not null) set @sql=@sql+''' and a.FromDepName='+@sendOrgName+''''
+   if(@processId is not null) set @sql=@sql+' and a.MsgSerID='+@processId
+   if(@minTime is not null) set @sql=@sql+' and a.CDate between '''+ @minTime+''' and '''+@maxTime+''''
+				EXEC(@sql)
+	</select>
+	<select id="getAreadyReadMsgLike"
+		resultType="org.jeff.javatool.tool.myactiviti.entity.result.TaskShowListVo"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+		DECLARE @limit int
+		SET	 @limit=#{limit}
+		DECLARE @offset int
+		SET	 @offset=#{offset}
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='a.Subject processTitle,a.EmpName sendStaff,a.FromDepName sendOrgName,convert(varchar(50),a.CDate,20) sendTime ,a.MsgSerID processId 
+		from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+	where   deled = 0 and status =1 and b.empid= '+@userId
+   set @sql=@sql+' and (a.EmpName like '''+@keyWord+''' or a.FromDepName like '''+@keyWord+''' or a.Subject like '''+@keyWord+''')'
+
+				if(@offset=0)
+				begin
+				EXEC('select top '+@limit +@sql+' order by a.CDate desc')
+				end
+				else
+				begin
+				 DECLARE @START_ID varchar(50) 
+    			 DECLARE @END_ID varchar(50) 
+    			 SET @START_ID = convert(varchar(50),@offset+1) 
+    			 SET @END_ID = convert(varchar(50),@offset+@limit) 
+				EXEC('select*from (SELECT ROW_NUMBER() OVER( order by CDate desc) AS rownum,indextable1.* from(select '+@sql+') as indextable1) as  indextable2 where rownum BETWEEN '+ @START_ID + ' AND ' + @END_ID )
+				end
+	</select>
+	<select id="countAreadyReadMsgLike"
+		resultType="int"
+		parameterType="org.jeff.javatool.tool.myactiviti.entity.query.QueryProcessListPage">
+		DECLARE @userId varchar(50)
+		SET	 @userId=#{userId}
+		DECLARE @keyWord varchar(100)
+		SET	 @keyWord='%'+#{keyWord}+'%'
+
+		
+		
+		DECLARE @sql varchar(8000)
+		SET @sql ='select  count (*) aa
+from ifshowmsg a join ifShowMsgLabel b on  a.msgserid=b.msgserid  
+where   deled = 0 and status =1 and b.empid= '+@userId
+   set @sql=@sql+' and (a.EmpName like '''+@keyWord+''' or a.FromDepName like '''+@keyWord+''' or a.Subject like '''+@keyWord+''')'
+
+				EXEC(@sql)
+	</select>
+</mapper>
